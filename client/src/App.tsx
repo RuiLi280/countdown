@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import MainDisplay from "./components/MainDisplay";
 import CountDownList from "./components/CountDownList";
-import User from "./components/User";
+import UserIcon from "./components/UserIcon";
 
 import './stylesheets/style.css';
 
-import {CDObj} from './types/types';
+import {CDObj, User} from './types/types';
 import AddCD from "./components/AddCD";
 
-type StateType = { mainDisplayTarget: CDObj, cdList: Array<CDObj>, newCD: CDObj, openAdd: boolean, login: boolean}
+type StateType = { user: User, newCD: CDObj, openAdd: boolean, login: boolean }
 class App extends Component<{}, StateType> {
     constructor(props: Readonly<{}>) {
         super(props);
         this.state = {
-            mainDisplayTarget: {title: "0", target: new Date("02/14/2020"), description: "abcdd"},
-            cdList: [
-                {title: "abcdefg", target: new Date("08/14/2020"), description: "abcdd"},
-                {title: "2", target: new Date("02/14/2021"), description: "abcdd"},
-                {title: "3", target: new Date("03/14/2020"), description: "abcdd"},
-                {title: "4", target: new Date("02/24/2020"), description: "abcdd"},
-            ],
+            user: {
+                username: "",
+                email: "",
+                list: [],
+                defaultCd: null,
+            },
             openAdd: false,
             newCD: {title: "", target: new Date(), description: ""},
             login: false
@@ -30,22 +30,71 @@ class App extends Component<{}, StateType> {
         this.handleLogin = this.handleLogin.bind(this);
     }
 
+    componentDidMount(): void {
+        axios.get('/api/get-data')
+            .then(res => {
+                if (res.status === 200 && res.data !== null) {
+                    console.log("something happen?");
+                    console.log(res.data);
+                    const d = res.data;
+                    this.setState({
+                        user: {
+                            username: d.username,
+                            email: d.email,
+                            defaultCd: d.defaultCd,
+                            list: d.cdList
+                        },
+                        login: d.isLogin
+                    });
+                }
+            }).catch(err => {
+                console.error(err);
+        });
+    }
+
     handleAddWindow(open: boolean) {
         this.setState({openAdd: open, newCD: {title: "", target: new Date(), description: ""}});
     }
 
-    handleSwitchMainDisplay(currTargetDate: CDObj, newTargetDate: CDObj): void {
-        const list = this.state.cdList.filter(i => i !== newTargetDate);
+    async handleSwitchMainDisplay(currTargetDate: CDObj | null, newTargetDate: CDObj) {
+        if (currTargetDate === null) return;
+        const user = this.state.user;
+        const list = user.list.filter(i => i !== newTargetDate);
         list.push(currTargetDate);
         this.setState({
-            mainDisplayTarget: newTargetDate,
-            cdList: list,
+            user: {
+                ...user,
+                list: list,
+                defaultCd: newTargetDate,
+            }
         });
+        try {
+            await axios.put('/api/add', {item: currTargetDate});
+            await axios.put('/api/remove', {title: newTargetDate.title});
+            await axios.put('/api/set-default', {item: newTargetDate});
+        } catch (e) {
+            console.error(e);
+        }
     }
 
-    handleAdd() {
-        const newList = [...this.state.cdList, this.state.newCD];
-        this.setState({cdList: newList});
+    async handleAdd() {
+        const user = this.state.user;
+        if (user.defaultCd === null) {
+            this.setState({user: {...user, defaultCd: this.state.newCD}});
+            try {
+                await axios.put('/api/set-default', {item: this.state.newCD});
+            } catch (e) {
+                console.error(e);
+            }
+            return;
+        }
+        const newList = [...user.list, this.state.newCD];
+        this.setState({user: {...user, list: newList}});
+        try {
+            await axios.put('/api/add', {item: this.state.newCD})
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     handleLogin(login: boolean) {
@@ -54,13 +103,14 @@ class App extends Component<{}, StateType> {
 
     render() {
         const newCD = this.state.newCD;
+        const user = this.state.user;
         return (
             <div className={"app-container"}>
-                <User hasLogin={this.state.login} login={this.handleLogin}/>
-                <MainDisplay targetDate={this.state.mainDisplayTarget}/>
+                <UserIcon hasLogin={this.state.login} login={this.handleLogin} username={user.username} email={user.email}/>
+                <MainDisplay targetDate={user.defaultCd}/>
                 <CountDownList
-                    list={this.state.cdList}
-                    handleSwitch={this.handleSwitchMainDisplay.bind(this, this.state.mainDisplayTarget)}
+                    list={user.list}
+                    handleSwitch={this.handleSwitchMainDisplay.bind(this, user.defaultCd)}
                     open={this.handleAddWindow}
                 />
                 <AddCD title={newCD.title}  setTitle={(t) => {this.setState({newCD: {...newCD, title: t}})}}

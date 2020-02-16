@@ -10,9 +10,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import SignUp from "./SignUp";
 
 type StateType = { anchorEl: HTMLImageElement | null, openLogin: boolean, openSignUp: boolean }
-type PropsType = { hasLogin: boolean, login: (hasLogin: boolean) => void }
+type PropsType = { hasLogin: boolean, login: (hasLogin: boolean) => void, username: string, email: string }
 
-class User extends Component<PropsType, StateType> {
+class UserIcon extends Component<PropsType, StateType> {
     constructor(props: Readonly<PropsType>) {
         super(props);
         this.state = {
@@ -48,7 +48,7 @@ class User extends Component<PropsType, StateType> {
         const open = Boolean(this.state.anchorEl);
         return (
             <div>
-                <Avatar onClick={this.handleClick}>H</Avatar>
+                <Avatar onClick={this.handleClick}>{this.props.username.charAt(0)}</Avatar>
                 <Popover open={open}
                          anchorEl={this.state.anchorEl}
                          onClose={this.handleClose}
@@ -84,9 +84,9 @@ class User extends Component<PropsType, StateType> {
     loginButton() {
         return (
             <div>
-                <Button onClick={(e) => this.setState({openLogin: true})}>Log in</Button>
+                <Button onClick={() => this.setState({openLogin: true})}>Log in</Button>
                 <Login open={this.state.openLogin} handleOpen={this.handleOpenClose.bind(this, "openLogin")} login={this.props.login}/>
-                <Button onClick={(e) => this.setState({openSignUp: true})}>Sign up</Button>
+                <Button onClick={() => this.setState({openSignUp: true})}>Sign up</Button>
                 <SignUp open={this.state.openSignUp} handleOpen={this.handleOpenClose.bind(this, "openSignUp")} login={this.props.login}/>
             </div>
         );
@@ -101,4 +101,4 @@ class User extends Component<PropsType, StateType> {
     }
 }
 
-export default User;
+export default UserIcon;

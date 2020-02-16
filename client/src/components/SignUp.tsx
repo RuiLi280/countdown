@@ -102,7 +102,7 @@ class SignUp extends Component<PropsType, StateType> {
                         required
                         margin={"dense"}
                         id={"username"}
-                        label={"User name"}
+                        label={"UserIcon name"}
                         type={"text"}
                         fullWidth
                         value={this.state.username}

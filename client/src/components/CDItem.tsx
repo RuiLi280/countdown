@@ -16,13 +16,22 @@ class CDItem extends Component<PropsType, StateType> {
         };
     }
 
-    calculateTimeDiff(target: Date): number {
+    calculateTimeDiff(target: Date | null): number {
+        if (target === null) return 0;
         return Math.floor((target.getTime() - new Date().getTime()) / 1000);
     }
 
     componentDidMount(): void {
         this.timeId = setInterval(() => {
-            this.setState({cd: this.calculateTimeDiff(this.props.item.target)});
+            let diff = this.calculateTimeDiff(this.props.item.target);
+            if (diff <= 0) {
+                diff = 0;
+                this.setState({cd: diff});
+                if (this.timeId) {
+                    clearInterval(this.timeId);
+                }
+            }
+            this.setState({cd: diff});
         }, 1000);
     }
 
@@ -34,7 +43,7 @@ class CDItem extends Component<PropsType, StateType> {
 
     render(): React.ReactElement | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         return (
-            <li className={"cd-list-item glass"} onClick={(e) => this.props.handleSwitch(this.props.item)}>
+            <li className={"cd-list-item glass"} onClick={() => this.props.handleSwitch(this.props.item)}>
                 <div className={"cd-list-item-content"}>
                     <div className={"title"}>{this.props.item.title}</div>
                     <div className={"cd"}>{this.state.cd}</div>

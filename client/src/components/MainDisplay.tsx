@@ -4,7 +4,7 @@ import '../stylesheets/style.css';
 
 import {CDObj} from "../types/types";
 
-type PropsType = { targetDate: CDObj}
+type PropsType = { targetDate: CDObj | null}
 type StateType = { timeRemain: number, test: string }
 
 class MainDisplay extends Component<PropsType, StateType> {
@@ -14,32 +14,45 @@ class MainDisplay extends Component<PropsType, StateType> {
         super(props);
         // this.targetDate = new Date("04/01/2020");
         this.state = {
-            timeRemain: this.calculateTimeDiff(this.props.targetDate.target),
+            timeRemain: this.props.targetDate === null ? 0 : this.calculateTimeDiff(this.props.targetDate.target),
             test: ""
         };
+        this.countdownInterval = this.countdownInterval.bind(this);
     }
 
-    calculateTimeDiff(target: Date): number {
+    calculateTimeDiff(target: Date | null): number {
+        if (target === null) return 0;
         return Math.floor((target.getTime() - new Date().getTime()) / 1000);
     }
 
     componentDidMount(): void {
-        this.timeId = setInterval(() => {
-            const diff = this.calculateTimeDiff(this.props.targetDate.target);
-            this.setState({timeRemain: diff});
-        }, 1000);
+        if (this.props.targetDate === null) {
+            console.log("not start main cd");
+            return;
+        }
+        this.timeId = setInterval(this.countdownInterval, 1000);
     }
 
     componentDidUpdate(prevProps: Readonly<PropsType>, prevState: Readonly<StateType>, snapshot?: any): void {
+        if (this.props.targetDate === null) return;
         if (prevProps !== this.props) {
             if (this.timeId) {
                 clearInterval(this.timeId);
             }
-            this.timeId = setInterval(() => {
-                const diff = this.calculateTimeDiff(this.props.targetDate.target);
-                this.setState({timeRemain: diff});
-            }, 1000);
+            this.timeId = setInterval(this.countdownInterval, 1000);
         }
+    }
+
+    countdownInterval() {
+        let diff = this.props.targetDate === null ? 0 : this.calculateTimeDiff(this.props.targetDate.target);
+        if (diff <= 0) {
+            diff = 0;
+            this.setState({timeRemain: diff});
+            if (this.timeId) {
+                clearInterval(this.timeId);
+            }
+        }
+        this.setState({timeRemain: diff});
     }
 
     componentWillUnmount(): void {
@@ -55,7 +68,7 @@ class MainDisplay extends Component<PropsType, StateType> {
                     { this.state.timeRemain }
                 </div>
                 <div className={"main-title"}>
-                    { this.props.targetDate.title }
+                    { this.props.targetDate === null ? "" : this.props.targetDate.title }
                 </div>
             </div>
         );

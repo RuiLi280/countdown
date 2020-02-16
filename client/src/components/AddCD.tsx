@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 type PropsType = {title: string, setTitle: (title:string)=>void,
-    date: Date, setDate: (date: Date) => void,
+    date: Date | null, setDate: (date: Date) => void,
     dest: string, setDest: (dest: string) => void,
     open: boolean, handleOpenClose: (open: boolean) => void,
     add: () => void
@@ -27,7 +27,8 @@ class AddCD extends Component<PropsType, StateType> {
         this.props.handleOpenClose(false);
     }
 
-    formatDate(date: Date): string {
+    formatDate(date: Date | null): string {
+        if (date === null) return "";
         let d = date,
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -41,7 +42,8 @@ class AddCD extends Component<PropsType, StateType> {
         return [year, month, day].join('-');
     }
 
-    formatTime(date: Date): string {
+    formatTime(date: Date | null): string {
+        if (date === null) return "";
         const h = date.getHours();
         const m = date.getMinutes();
         return (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m);
