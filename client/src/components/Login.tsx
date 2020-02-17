@@ -31,11 +31,11 @@ class Login extends Component<PropsType, StateType> {
     }
 
     handleSubmit() {
-        if (!this.checkEmailFormat(this.state.email)) {
+        if (!Login.checkEmailFormat(this.state.email)) {
             this.setState({checkEmail: emailError.format});
             return;
         }
-        axios.post('/users/login', {
+        axios.post('http://countdown.thewatercats.com:4000/users/login', {
             email: this.state.email,
             password: this.state.password,
         }).then(res => {
@@ -50,7 +50,7 @@ class Login extends Component<PropsType, StateType> {
         })
     }
 
-    checkEmailFormat(email: string): boolean {
+    static checkEmailFormat(email: string): boolean {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     }
 

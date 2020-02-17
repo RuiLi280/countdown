@@ -22,7 +22,8 @@ module.exports.userLogin = function (req, res) {
                 }
             }).catch(e => {
                 console.error(e);
-                res.send("err");
+                res.status(400);
+                res.send("incorrect input field");
             });
         } else {
             res.status(400);
@@ -30,7 +31,7 @@ module.exports.userLogin = function (req, res) {
         }
     }).catch(e => {
         console.error(e);
-        res.send("err");
+        res.send("error");
     })
 };
 

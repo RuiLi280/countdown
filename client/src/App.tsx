@@ -28,27 +28,32 @@ class App extends Component<{}, StateType> {
         this.handleAddWindow = this.handleAddWindow.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
+        this.getData = this.getData.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
     }
 
     componentDidMount(): void {
-        axios.get('/api/get-data')
+        this.getData();
+    }
+
+    getData() {
+        axios.get('http://countdown.thewatercats.com:4000/api/get-data')
             .then(res => {
                 if (res.status === 200 && res.data !== null) {
-                    console.log("something happen?");
-                    console.log(res.data);
                     const d = res.data;
+                    const defaultCd = d.defaultCd === null ? null : {...d.defaultCd, target: new Date(d.defaultCd.target)};
                     this.setState({
                         user: {
                             username: d.username,
                             email: d.email,
-                            defaultCd: d.defaultCd,
-                            list: d.cdList
+                            defaultCd: defaultCd,
+                            list: d.cdList.map((item: CDObj) => ({...item, target: new Date(item.target)})),
                         },
                         login: d.isLogin
                     });
                 }
             }).catch(err => {
-                console.error(err);
+            console.error(err);
         });
     }
 
@@ -69,9 +74,9 @@ class App extends Component<{}, StateType> {
             }
         });
         try {
-            await axios.put('/api/add', {item: currTargetDate});
-            await axios.put('/api/remove', {title: newTargetDate.title});
-            await axios.put('/api/set-default', {item: newTargetDate});
+            await axios.put('http://countdown.thewatercats.com:4000/api/add', {item: currTargetDate});
+            await axios.put('http://countdown.thewatercats.com:4000/api/remove', {title: newTargetDate.title});
+            await axios.put('http://countdown.thewatercats.com:4000/api/set-default', {defaultCd: newTargetDate});
         } catch (e) {
             console.error(e);
         }
@@ -82,7 +87,7 @@ class App extends Component<{}, StateType> {
         if (user.defaultCd === null) {
             this.setState({user: {...user, defaultCd: this.state.newCD}});
             try {
-                await axios.put('/api/set-default', {item: this.state.newCD});
+                await axios.put('http://countdown.thewatercats.com:4000/api/set-default', {defaultCd: this.state.newCD});
             } catch (e) {
                 console.error(e);
             }
@@ -91,13 +96,26 @@ class App extends Component<{}, StateType> {
         const newList = [...user.list, this.state.newCD];
         this.setState({user: {...user, list: newList}});
         try {
-            await axios.put('/api/add', {item: this.state.newCD})
+            await axios.put('http://countdown.thewatercats.com:4000/api/add', {item: this.state.newCD})
         } catch (e) {
             console.error(e);
         }
     }
 
+    handleRemove(title: string) {
+        const newList = this.state.user.list.filter((i) => title !== i.title);
+        this.setState({user: {...this.state.user, list: newList}});
+        axios.put('http://countdown.thewatercats.com:4000/api/remove', {
+            title: title
+        }).catch(err => console.error(err));
+    }
+
     handleLogin(login: boolean) {
+        if (login === true) {
+            this.getData();
+        } else if (login === false) {
+            this.setState({user: {username: "", email: "", defaultCd: null, list: []}});
+        }
         this.setState({login: login});
     }
 
@@ -112,6 +130,7 @@ class App extends Component<{}, StateType> {
                     list={user.list}
                     handleSwitch={this.handleSwitchMainDisplay.bind(this, user.defaultCd)}
                     open={this.handleAddWindow}
+                    remove={this.handleRemove}
                 />
                 <AddCD title={newCD.title}  setTitle={(t) => {this.setState({newCD: {...newCD, title: t}})}}
                        date={newCD.target} setDate={(d) => {this.setState({newCD: {...newCD, target: d}})}}

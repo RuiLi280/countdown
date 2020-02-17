@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import '../stylesheets/style.css';
 
 import {CDObj} from "../types/types";
+import TimeWrapper from "./TimeWrapper";
 
 type PropsType = { targetDate: CDObj | null}
 type StateType = { timeRemain: number, test: string }
@@ -12,7 +13,6 @@ class MainDisplay extends Component<PropsType, StateType> {
     private timeId: NodeJS.Timeout | undefined;
     constructor(props: Readonly<PropsType>) {
         super(props);
-        // this.targetDate = new Date("04/01/2020");
         this.state = {
             timeRemain: this.props.targetDate === null ? 0 : this.calculateTimeDiff(this.props.targetDate.target),
             test: ""
@@ -27,7 +27,6 @@ class MainDisplay extends Component<PropsType, StateType> {
 
     componentDidMount(): void {
         if (this.props.targetDate === null) {
-            console.log("not start main cd");
             return;
         }
         this.timeId = setInterval(this.countdownInterval, 1000);
@@ -62,13 +61,17 @@ class MainDisplay extends Component<PropsType, StateType> {
     }
 
     render() {
+        const t = this.state.timeRemain;
         return (
             <div>
                 <div className={"main-countdown"}>
-                    { this.state.timeRemain }
+                    <TimeWrapper sec={t} styles={{fontSize: "13vw", color: "#4e4e4e"}}/>
                 </div>
                 <div className={"main-title"}>
                     { this.props.targetDate === null ? "" : this.props.targetDate.title }
+                </div>
+                <div className={"main-desc"}>
+                    { this.props.targetDate === null ? "" : this.props.targetDate.description }
                 </div>
             </div>
         );

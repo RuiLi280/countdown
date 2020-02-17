@@ -1,11 +1,11 @@
-import React, {Component, ReactEventHandler} from 'react';
+import React, {Component} from 'react';
 
 import CDItem from "./CDItem";
 import '../stylesheets/style.css';
 
 import {CDObj} from "../types/types";
 
-type PropsType = { list: Array<CDObj>, handleSwitch: (newTargetDate: CDObj) => void, open: (open: boolean) => void };
+type PropsType = { list: Array<CDObj>, handleSwitch: (newTargetDate: CDObj) => void, open: (open: boolean) => void, remove: (title: string) => void };
 type StateType = { newTitle: string, newDate: Date, newDest: string, expand: boolean };
 
 class CountDownList extends Component<PropsType, StateType> {
@@ -60,7 +60,7 @@ class CountDownList extends Component<PropsType, StateType> {
                     <ul>
                         <li className={"add glass"} onClick={this.handleOnAddItem}>+</li>
                         {this.props.list && this.props.list.map((item, idx) => {
-                            return <CDItem key={idx} item={item} handleSwitch={this.props.handleSwitch}/>
+                            return <CDItem key={idx} item={item} handleSwitch={this.props.handleSwitch} remove={this.props.remove}/>
                         })}
                     </ul>
                 </span>

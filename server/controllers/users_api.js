@@ -1,24 +1,3 @@
-// module.exports.home = async function(req, res) {
-//     const email = req.session.email;
-//     const db = req.db;
-//     const controller = db.get('user');
-//     try {
-//         const doc = await controller.findOne(email);
-//         if (doc !== null) {
-//             const data = {
-//                 username: doc.username,
-//                 email: doc.email,
-//                 defaultCd: doc.defaultCd,
-//                 cdList: doc.list,
-//             };
-//             res.send(data);
-//         }
-//     } catch (e) {
-//         console.error(e);
-//         res.send("error");
-//     }
-// };
-
 
 module.exports.setDefault = async function(req, res) {
     const col = req.db.get("user");

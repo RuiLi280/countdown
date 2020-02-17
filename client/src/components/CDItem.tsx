@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, {Component, SyntheticEvent} from 'react';
 
 import '../stylesheets/style.css';
 import {CDObj} from "../types/types";
+import TimeWrapper from "./TimeWrapper";
 
-type PropsType = { item: CDObj, handleSwitch: (newTargetDate: CDObj) => void};
+type PropsType = { item: CDObj, handleSwitch: (newTargetDate: CDObj) => void, remove: (title: string) => void};
 type StateType = { cd: number};
 
 class CDItem extends Component<PropsType, StateType> {
@@ -14,6 +15,7 @@ class CDItem extends Component<PropsType, StateType> {
         this.state = {
             cd: this.calculateTimeDiff(this.props.item.target),
         };
+        this.handleRemove = this.handleRemove.bind(this);
     }
 
     calculateTimeDiff(target: Date | null): number {
@@ -41,13 +43,21 @@ class CDItem extends Component<PropsType, StateType> {
         }
     }
 
+    handleRemove(e: SyntheticEvent) {
+        e.stopPropagation();
+        this.props.remove(this.props.item.title);
+    }
+
     render(): React.ReactElement | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         return (
             <li className={"cd-list-item glass"} onClick={() => this.props.handleSwitch(this.props.item)}>
                 <div className={"cd-list-item-content"}>
                     <div className={"title"}>{this.props.item.title}</div>
-                    <div className={"cd"}>{this.state.cd}</div>
+                    <div className={"cd"}>
+                        <TimeWrapper sec={this.state.cd} styles={{fontSize: "15px"}}/>
+                    </div>
                 </div>
+                <div className={"remove"} onClick={this.handleRemove}>-</div>
             </li>
         )
     }

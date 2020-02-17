@@ -55,7 +55,7 @@ class SignUp extends Component<PropsType, StateType> {
             username: data.username
         };
         console.log(d);
-        axios.post("/users/sign-up", {
+        axios.post("http://countdown.thewatercats.com:4000/sign-up", {
             email: data.email,
             password: data.password,
             username: data.username
@@ -63,6 +63,7 @@ class SignUp extends Component<PropsType, StateType> {
             if (res.status === 409) {
                 this.setState({checkEmail: emailError.format});
             } else if (res.status === 201) {
+                this.props.login(true);
                 this.handleClose();
             } else {
                 console.error("error");
@@ -102,7 +103,7 @@ class SignUp extends Component<PropsType, StateType> {
                         required
                         margin={"dense"}
                         id={"username"}
-                        label={"UserIcon name"}
+                        label={"User name"}
                         type={"text"}
                         fullWidth
                         value={this.state.username}
