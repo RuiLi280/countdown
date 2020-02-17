@@ -3,9 +3,9 @@ const router = express.Router();
 
 const user = require('../controllers/users_api');
 
-/* GET users listing. */
-router.post('/login', user.userLogin);
-router.post('/sign-up', user.userSignUp);
-router.get('/logout', user.userLogout);
+router.put('/set-default', user.setDefault);
+router.put('/add', user.add);
+router.put('/remove', user.remove);
+router.get('/get-data', user.getData);
 
 module.exports = router;

@@ -1,59 +1,83 @@
-module.exports.userLogin = function (req, res) {
-    const db = req.db;
-    const collection = db.get("user");
-    const data = req.body;
-    collection.findOne({email: data.email}).then((doc) => {
-        if (doc === null) {
-            res.status(400);
-            res.send("user not exist");
-        } else if (doc.email === data.email) {
-            const bcrypt = require("bcrypt");
-            const inPass = data.password;
-            bcrypt.compare(inPass, doc.password).then((result) => {
-                req.session.email = req.body.email;
-                if (result) {
-                    res.status(200);
-                    res.send("success");
-                }
-            });
-        } else {
-            res.status(400);
-            res.send("error");
-        }
-    });
-};
+// module.exports.home = async function(req, res) {
+//     const email = req.session.email;
+//     const db = req.db;
+//     const controller = db.get('user');
+//     try {
+//         const doc = await controller.findOne(email);
+//         if (doc !== null) {
+//             const data = {
+//                 username: doc.username,
+//                 email: doc.email,
+//                 defaultCd: doc.defaultCd,
+//                 cdList: doc.list,
+//             };
+//             res.send(data);
+//         }
+//     } catch (e) {
+//         console.error(e);
+//         res.send("error");
+//     }
+// };
 
-module.exports.userSignUp = async function (req, res) {
-    const db = req.db;
-    const collection = db.get("user");
-    const data = req.body;
-    // console.log(req);
-    const doc = await collection.findOne({email: data.email});
-    if (doc === null) {
-        const bcrypt = require("bcrypt");
-        const hash = await bcrypt.hash(data.password, 10);
-        const newUser = {
-            username: data.username,
-            password: hash,
-            email: data.email,
-            cdList: [],
-        };
-        collection.insert(newUser);
-        req.session.email = newUser.email;
-        res.status(201);
-        res.send("created");
-    } else {
-        res.status(409);
-        res.send("email already existed");
+
+module.exports.setDefault = async function(req, res) {
+    const col = req.db.get("user");
+    try {
+        const doc = await col.findOne({email: req.session.email});
+        await col.update({email: req.session.email}, {$set: {defaultCd: req.body.defaultCd}});
+        res.send({email: doc.email, defaultCd: req.body.defaultCd});
+    } catch (e) {
+        res.status(400);
+        console.error(e);
+        res.send("fail to set default");
     }
 };
 
-module.exports.userLogout = function(req, res) {
-    req.session.destroy((err) => {
-        if (err) {
-            return console.log(err);
-        }
-        res.status(200);
-        res.send("log out");
-    })
+module.exports.add = async function(req, res) {
+    const email = req.session.email;
+
+    const col = req.db.get("user");
+    try {
+        const doc = await col.findOne({email: email});
+        const list = [...doc.cdList, req.body.item];
+        await col.update({email, email}, {$set: {cdList: list}});
+        res.send(list);
+    } catch(e) {
+        console.error(e);
+        res.status(400);
+        res.send("fail to add");
+    }
+};
+
+module.exports.remove = async function(req, res) {
+    const email = req.session.email;
+    const col = req.db.get("user");
+    try {
+        const doc = await col.findOne({email: email});
+        const list = doc.cdList.filter(val => val.title !== req.body.title);
+        await col.update({email: email}, {$set: {cdList: list}});
+        res.send(list);
+    } catch(e) {
+        console.error(e);
+        res.status(400);
+        res.send("fail to remove");
+    }
+};
+
+module.exports.getData = async function(req, res) {
+    const email = req.session.email;
+    const col = req.db.get("user");
+    try {
+        const doc = await col.findOne({email: email});
+        res.send({
+            isLogin: true,
+            username: doc.username,
+            email: doc.email,
+            defaultCd: doc.defaultCd,
+            cdList: doc.cdList,
+        });
+    } catch (e) {
+        console.error(e);
+        res.send("error");
+    }
 };
