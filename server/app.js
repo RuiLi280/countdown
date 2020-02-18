@@ -25,7 +25,8 @@ const corsOptions = {
         } else {
             callback(new Error('Not allowed by CORS'))
         }
-    }
+    },
+    credentials: true
 };
 app.use(cors(corsOptions));
 
@@ -53,8 +54,8 @@ app.use('/', indexRouter);
 
 app.use('/api', (req, res, next) => {
     // console.log(req.session.email);
-    // console.log(req.session.id);
-    // console.log(req.session);
+    console.log(req.session.id);
+    console.log(req.session);
     if (!req.session.email) {
         guessRouter(req, res, next);
     } else {

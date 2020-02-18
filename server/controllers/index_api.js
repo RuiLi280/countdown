@@ -39,7 +39,7 @@ module.exports.userSignUp = async function (req, res) {
     const db = req.db;
     const collection = db.get("user");
     const data = req.body;
-    console.log(req);
+    // console.log(req);
     try {
         const doc = await collection.findOne({email: data.email});
         if (doc === null) {
@@ -76,5 +76,5 @@ module.exports.userLogout = function(req, res) {
         }
         res.status(200);
         res.send("log out");
-    })
+    });
 };

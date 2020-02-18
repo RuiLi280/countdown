@@ -48,13 +48,7 @@ class SignUp extends Component<PropsType, StateType> {
         if (data.password !== data.confirm || data.checkEmail !== emailError.ok) {
             return;
         }
-
-        const d = {
-            email: data.email,
-            password: data.password,
-            username: data.username
-        };
-        axios.post("http://cdapi.thewatercats.com:4000/sign-up", {
+        axios.post("/sign-up", {
             email: data.email,
             password: data.password,
             username: data.username

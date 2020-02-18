@@ -37,7 +37,7 @@ class App extends Component<{}, StateType> {
     }
 
     getData() {
-        axios.get('http://cdapi.thewatercats.com:4000/api/get-data')
+        axios.get('/api/get-data')
             .then(res => {
                 if (res.status === 200 && res.data !== null) {
                     const d = res.data;
@@ -74,9 +74,9 @@ class App extends Component<{}, StateType> {
             }
         });
         try {
-            await axios.put('http://cdapi.thewatercats.com:4000/api/add', {item: currTargetDate});
-            await axios.put('http://cdapi.thewatercats.com:4000/api/remove', {title: newTargetDate.title});
-            await axios.put('http://cdapi.thewatercats.com:4000/api/set-default', {defaultCd: newTargetDate});
+            await axios.put('/api/add', {item: currTargetDate});
+            await axios.put('/api/remove', {title: newTargetDate.title});
+            await axios.put('/api/set-default', {defaultCd: newTargetDate});
         } catch (e) {
             console.error(e);
         }
@@ -87,7 +87,7 @@ class App extends Component<{}, StateType> {
         if (user.defaultCd === null) {
             this.setState({user: {...user, defaultCd: this.state.newCD}});
             try {
-                await axios.put('http://cdapi.thewatercats.com:4000/api/set-default', {defaultCd: this.state.newCD});
+                await axios.put('/api/set-default', {defaultCd: this.state.newCD});
             } catch (e) {
                 console.error(e);
             }
@@ -96,7 +96,7 @@ class App extends Component<{}, StateType> {
         const newList = [...user.list, this.state.newCD];
         this.setState({user: {...user, list: newList}});
         try {
-            await axios.put('http://cdapi.thewatercats.com:4000/api/add', {item: this.state.newCD})
+            await axios.put('/api/add', {item: this.state.newCD})
         } catch (e) {
             console.error(e);
         }
@@ -105,7 +105,7 @@ class App extends Component<{}, StateType> {
     handleRemove(title: string) {
         const newList = this.state.user.list.filter((i) => title !== i.title);
         this.setState({user: {...this.state.user, list: newList}});
-        axios.put('http://cdapi.thewatercats.com:4000/api/remove', {
+        axios.put('/api/remove', {
             title: title
         }).catch(err => console.error(err));
     }

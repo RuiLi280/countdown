@@ -34,7 +34,7 @@ class UserIcon extends Component<PropsType, StateType> {
     }
 
     handleLogout() {
-        axios.get('http://cdapi.thewatercats.com:4000/logout')
+        axios.get('/logout')
             .then(res => {
                 if (res.status === 200) {
                     this.props.login(false);

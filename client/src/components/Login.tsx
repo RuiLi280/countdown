@@ -35,7 +35,7 @@ class Login extends Component<PropsType, StateType> {
             this.setState({checkEmail: emailError.format});
             return;
         }
-        axios.post('http://cdapi.thewatercats.com:4000/login', {
+        axios.post('/login', {
             email: this.state.email,
             password: this.state.password,
         }).then(res => {
