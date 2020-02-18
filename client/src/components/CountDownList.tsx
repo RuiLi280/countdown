@@ -15,7 +15,7 @@ class CountDownList extends Component<PropsType, StateType> {
             newTitle: "",
             newDate: new Date(),
             newDest: "",
-            expand: false,
+            expand: true,
         };
         this.handleOnAddItem = this.handleOnAddItem.bind(this);
         this.handleChangeDate = this.handleChangeDate.bind(this);

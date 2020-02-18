@@ -54,6 +54,7 @@ module.exports.userSignUp = async function (req, res) {
                 cdList: sess.cdList,
             };
             await collection.insert(newUser);
+            console.log(newUser);
             req.session.email = newUser.email;
             res.status(201);
             res.send("created");

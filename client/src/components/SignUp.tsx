@@ -54,8 +54,7 @@ class SignUp extends Component<PropsType, StateType> {
             password: data.password,
             username: data.username
         };
-        console.log(d);
-        axios.post("http://countdown.thewatercats.com:4000/sign-up", {
+        axios.post("http://cdapi.thewatercats.com:4000/sign-up", {
             email: data.email,
             password: data.password,
             username: data.username
