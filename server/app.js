@@ -48,12 +48,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
 app.use('/', indexRouter);
 
 app.use('/api', (req, res, next) => {
-    // console.log(req.session.email);
     console.log(req.session.id);
     console.log(req.session);
     if (!req.session.email) {

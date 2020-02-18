@@ -17,6 +17,7 @@ module.exports.userLogin = function (req, res) {
             bcrypt.compare(inPass, doc.password).then((result) => {
                 req.session.email = req.body.email;
                 if (result) {
+                    console.log("xxx");
                     res.status(200);
                     res.send("login success");
                 }
@@ -51,7 +52,7 @@ module.exports.userSignUp = async function (req, res) {
                 password: hash,
                 email: data.email,
                 defaultCd: sess.defaultCd,
-                cdList: sess.cdList,
+                cdList: sess.cdList ? [] : sess.cdList,
             };
             await collection.insert(newUser);
             console.log(newUser);
@@ -66,7 +67,6 @@ module.exports.userSignUp = async function (req, res) {
         console.error(e);
         res.send("error");
     }
-
 };
 
 module.exports.userLogout = function(req, res) {

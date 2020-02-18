@@ -36,9 +36,7 @@ class UserIcon extends Component<PropsType, StateType> {
     handleLogout() {
         axios.get('/logout')
             .then(res => {
-                if (res.status === 200) {
-                    this.props.login(false);
-                }
+                this.props.login(false)
             }).catch(err => {
                 console.log(err);
         });
@@ -84,7 +82,7 @@ class UserIcon extends Component<PropsType, StateType> {
     loginButton() {
         return (
             <div>
-                <Button onClick={() => this.setState({openLogin: true})}>Log in</Button>
+                <Button onClick={(e) => {e.stopPropagation(); this.setState({openLogin: true})}}>Log in</Button>
                 <Login open={this.state.openLogin} handleOpen={this.handleOpenClose.bind(this, "openLogin")} login={this.props.login}/>
                 <Button onClick={() => this.setState({openSignUp: true})}>Sign up</Button>
                 <SignUp open={this.state.openSignUp} handleOpen={this.handleOpenClose.bind(this, "openSignUp")} login={this.props.login}/>

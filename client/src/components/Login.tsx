@@ -1,9 +1,9 @@
-import React, {ChangeEvent, Component} from 'react';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@material-ui/core";
+import React, {ChangeEvent, Component, SyntheticEvent} from 'react';
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormHelperText} from "@material-ui/core";
 import {emailError} from "../types/types";
 import axios from 'axios';
 
-type StateType = {email: string, password: string, checkEmail: emailError}
+type StateType = {email: string, password: string, checkEmail: emailError, error: boolean}
 type PropsType = {open: boolean, handleOpen: (open: boolean) => void, login: (login: boolean) => void}
 
 class Login extends Component<PropsType, StateType> {
@@ -13,6 +13,7 @@ class Login extends Component<PropsType, StateType> {
             email: "",
             password: "",
             checkEmail: emailError.ok,
+            error: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -20,7 +21,7 @@ class Login extends Component<PropsType, StateType> {
     }
 
     handleClose() {
-        this.setState({email: "", password: ""});
+        this.setState({email: "", password: "", checkEmail: emailError.ok, error: false});
         this.props.handleOpen(false);
     }
 
@@ -30,7 +31,8 @@ class Login extends Component<PropsType, StateType> {
         this.setState(ps => ({...ps, [id]: val,}));
     }
 
-    handleSubmit() {
+    handleSubmit(e: SyntheticEvent) {
+        e.preventDefault();
         if (!Login.checkEmailFormat(this.state.email)) {
             this.setState({checkEmail: emailError.format});
             return;
@@ -39,15 +41,11 @@ class Login extends Component<PropsType, StateType> {
             email: this.state.email,
             password: this.state.password,
         }).then(res => {
-            if (res.status === 200) {
-                this.props.login(true);
-                this.handleClose();
-            } else {
-                console.log(res.data);
-            }
+            this.props.login(true);
+            this.handleClose();
         }).catch(err => {
-            console.log(err.message);
-        })
+            this.setState({error: true});
+        });
     }
 
     static checkEmailFormat(email: string): boolean {
@@ -71,38 +69,46 @@ class Login extends Component<PropsType, StateType> {
         return (
             <Dialog open={open} onClose={this.handleClose}>
                 <DialogTitle>Log in</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        required
-                        error={this.state.checkEmail !== emailError.ok}
-                        margin={"dense"}
-                        id={"email"}
-                        label={"Email"}
-                        type={"email"}
-                        fullWidth
-                        value={this.state.email}
-                        onChange={this.handleChange}
-                        helperText={this.emailErrorMessage()}
-                    />
-                    <TextField
-                        required
-                        margin={"dense"}
-                        id={"password"}
-                        label={"Password"}
-                        type={"password"}
-                        fullWidth
-                        value={this.state.password}
-                        onChange={this.handleChange}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={this.handleSubmit} color="primary">
-                        Log in
-                    </Button>
-                </DialogActions>
+                <form onSubmit={this.handleSubmit}>
+                    <DialogContent>
+                        <TextField
+                            required
+                            error={this.state.checkEmail !== emailError.ok}
+                            margin={"dense"}
+                            id={"email"}
+                            label={"Email"}
+                            type={"email"}
+                            fullWidth
+                            value={this.state.email}
+                            onChange={this.handleChange}
+                            helperText={this.emailErrorMessage()}
+                        />
+                        <TextField
+                            required
+                            margin={"dense"}
+                            id={"password"}
+                            label={"Password"}
+                            type={"password"}
+                            fullWidth
+                            value={this.state.password}
+                            onChange={this.handleChange}
+                        />
+                        <FormHelperText
+                            error={true}
+                            margin={"dense"}
+                        >
+                            {this.state.error ? "Incorrect email or password" : ""}
+                        </FormHelperText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button type={"submit"} color="primary">
+                            Log in
+                        </Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         )
     }

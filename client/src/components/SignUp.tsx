@@ -1,4 +1,4 @@
-import React, {ChangeEvent, Component} from 'react';
+import React, {ChangeEvent, Component, SyntheticEvent} from 'react';
 import axios from 'axios';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@material-ui/core";
 import {emailError} from "../types/types";
@@ -30,7 +30,7 @@ class SignUp extends Component<PropsType, StateType> {
         const id = e.target.id;
         const val = e.target.value;
         if (id === "email" ){
-            if (!this.checkEmailFormat(val)) {
+            if (!SignUp.checkEmailFormat(val)) {
                 this.setState({checkEmail: emailError.format});
             } else {
                 this.setState({checkEmail: emailError.ok});
@@ -40,7 +40,8 @@ class SignUp extends Component<PropsType, StateType> {
         this.setState((ps) => ({...ps, [id]: val,}));
     }
 
-    handleSubmit() {
+    handleSubmit(e: SyntheticEvent) {
+        e.preventDefault();
         const data = this.state;
         if (data.email === "" || data.username === "" || data.password === "") {
             return;
@@ -66,7 +67,7 @@ class SignUp extends Component<PropsType, StateType> {
         });
     }
 
-    checkEmailFormat(email: string): boolean {
+    static checkEmailFormat(email: string): boolean {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     }
 
@@ -91,61 +92,63 @@ class SignUp extends Component<PropsType, StateType> {
         return (
             <Dialog open={open} onClose={this.handleClose}>
                 <DialogTitle>Log in</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        required
-                        margin={"dense"}
-                        id={"username"}
-                        label={"User name"}
-                        type={"text"}
-                        fullWidth
-                        value={this.state.username}
-                        onChange={this.handleChange}
-                    />
-                    <TextField
-                        required
-                        error={checkEmail !== emailError.ok}
-                        margin={"dense"}
-                        id={"email"}
-                        label={"Email"}
-                        type={"email"}
-                        fullWidth
-                        value={this.state.email}
-                        onChange={this.handleChange}
-                        helperText={this.emailErrorMessage()}
-                    />
-                    <TextField
-                        required
-                        margin={"dense"}
-                        id={"password"}
-                        label={"Password"}
-                        type={"password"}
-                        fullWidth
-                        value={this.state.password}
-                        onChange={this.handleChange}
-                    />
-                    <TextField
-                        required
-                        error={checkPassword}
-                        margin={"dense"}
-                        id={"confirm"}
-                        label={"Confirm password"}
-                        type={"password"}
-                        fullWidth
-                        value={this.state.confirm}
-                        onChange={this.handleChange}
-                        helperText={checkPassword ? "Password does not match" : ""}
-                    />
+                <form onSubmit={this.handleSubmit}>
+                    <DialogContent>
+                        <TextField
+                            required
+                            margin={"dense"}
+                            id={"username"}
+                            label={"User name"}
+                            type={"text"}
+                            fullWidth
+                            value={this.state.username}
+                            onChange={this.handleChange}
+                        />
+                        <TextField
+                            required
+                            error={checkEmail !== emailError.ok}
+                            margin={"dense"}
+                            id={"email"}
+                            label={"Email"}
+                            type={"email"}
+                            fullWidth
+                            value={this.state.email}
+                            onChange={this.handleChange}
+                            helperText={this.emailErrorMessage()}
+                        />
+                        <TextField
+                            required
+                            margin={"dense"}
+                            id={"password"}
+                            label={"Password"}
+                            type={"password"}
+                            fullWidth
+                            value={this.state.password}
+                            onChange={this.handleChange}
+                        />
+                        <TextField
+                            required
+                            error={checkPassword}
+                            margin={"dense"}
+                            id={"confirm"}
+                            label={"Confirm password"}
+                            type={"password"}
+                            fullWidth
+                            value={this.state.confirm}
+                            onChange={this.handleChange}
+                            helperText={checkPassword ? "Password does not match" : ""}
+                        />
 
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={this.handleSubmit} color="primary">
-                        Sign Up
-                    </Button>
-                </DialogActions>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                                Cancel
+                            </Button>
+                        <Button type={'submit'} color="primary">
+                            Sign Up
+                        </Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         )
     }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, SyntheticEvent} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -27,7 +27,7 @@ class AddCD extends Component<PropsType, StateType> {
         this.props.handleOpenClose(false);
     }
 
-    formatDate(date: Date | null): string {
+    static formatDate(date: Date | null): string {
         if (date === null) return "";
         let d = date,
             month = '' + (d.getMonth() + 1),
@@ -42,7 +42,7 @@ class AddCD extends Component<PropsType, StateType> {
         return [year, month, day].join('-');
     }
 
-    formatTime(date: Date | null): string {
+    static formatTime(date: Date | null): string {
         if (date === null) return "";
         const h = date.getHours();
         const m = date.getMinutes();
@@ -53,7 +53,8 @@ class AddCD extends Component<PropsType, StateType> {
         this.props.setDate(new Date(date + " " + time));
     }
 
-    add() {
+    add(e: SyntheticEvent) {
+        e.preventDefault();
         this.props.add();
         this.props.handleOpenClose(false);
     }
@@ -67,52 +68,54 @@ class AddCD extends Component<PropsType, StateType> {
             <div>
                 <Dialog open={open} onClose={this.handleClickClose}>
                     <DialogTitle id={"add-new-countdown"}>Add new count down</DialogTitle>
-                    <DialogContent>
-                        <TextField
-                            autoFocus
-                            margin={"dense"}
-                            id={"title"}
-                            label={"Count down for"}
-                            type={"text"}
-                            fullWidth
-                            required
-                            value={title}
-                            onChange={(e) => this.props.setTitle(e.target.value)}
-                        />
-                        <TextField
-                            margin={"dense"}
-                            id={"date"}
-                            type={"date"}
-                            value={this.formatDate(date)}
-                            onChange={(e) => this.setDateTime(e.target.value, this.formatTime(date))}
-                            required
-                        />
-                        <TextField
-                            margin={"dense"}
-                            id={"time"}
-                            type={"time"}
-                            value={this.formatTime(date)}
-                            onChange={(e) => this.setDateTime(this.formatDate(date), e.target.value)}
-                        />
-                        <TextField
-                            margin={"dense"}
-                            id={"dest"}
-                            type={"test"}
-                            label={"Description"}
-                            multiline
-                            fullWidth
-                            value={dest}
-                            onChange={(e) => this.props.setDest(e.target.value)}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClickClose} color={"primary"}>
-                            Cancel
-                        </Button>
-                        <Button onClick={this.add} color={"primary"}>
-                            Ok
-                        </Button>
-                    </DialogActions>
+                    <form onSubmit={this.add}>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin={"dense"}
+                                id={"title"}
+                                label={"Count down for"}
+                                type={"text"}
+                                fullWidth
+                                required
+                                value={title}
+                                onChange={(e) => this.props.setTitle(e.target.value)}
+                            />
+                            <TextField
+                                margin={"dense"}
+                                id={"date"}
+                                type={"date"}
+                                value={AddCD.formatDate(date)}
+                                onChange={(e) => this.setDateTime(e.target.value, AddCD.formatTime(date))}
+                                required
+                            />
+                            <TextField
+                                margin={"dense"}
+                                id={"time"}
+                                type={"time"}
+                                value={AddCD.formatTime(date)}
+                                onChange={(e) => this.setDateTime(AddCD.formatDate(date), e.target.value)}
+                            />
+                            <TextField
+                                margin={"dense"}
+                                id={"dest"}
+                                type={"test"}
+                                label={"Description"}
+                                multiline
+                                fullWidth
+                                value={dest}
+                                onChange={(e) => this.props.setDest(e.target.value)}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClickClose} color={"primary"}>
+                                Cancel
+                            </Button>
+                            <Button type={'submit'} color={"primary"}>
+                                Ok
+                            </Button>
+                        </DialogActions>
+                    </form>
                 </Dialog>
             </div>
         );
