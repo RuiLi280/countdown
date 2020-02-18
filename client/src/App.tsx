@@ -39,19 +39,17 @@ class App extends Component<{}, StateType> {
     getData() {
         axios.get('/api/get-data')
             .then(res => {
-                if (res.status === 200 && res.data !== null) {
-                    const d = res.data;
-                    const defaultCd = d.defaultCd === null ? null : {...d.defaultCd, target: new Date(d.defaultCd.target)};
-                    this.setState({
-                        user: {
-                            username: d.username,
-                            email: d.email,
-                            defaultCd: defaultCd,
-                            list: d.cdList.map((item: CDObj) => ({...item, target: new Date(item.target)})),
-                        },
-                        login: d.isLogin
-                    });
-                }
+                const d = res.data;
+                const defaultCd = d.defaultCd === null ? null : {...d.defaultCd, target: new Date(d.defaultCd.target)};
+                this.setState({
+                    user: {
+                        username: d.username,
+                        email: d.email,
+                        defaultCd: defaultCd,
+                        list: d.cdList.map((item: CDObj) => ({...item, target: new Date(item.target)})),
+                    },
+                    login: d.isLogin
+                });
             }).catch(err => {
             console.error(err);
         });

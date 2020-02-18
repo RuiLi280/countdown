@@ -84,7 +84,7 @@ class UserIcon extends Component<PropsType, StateType> {
             <div>
                 <Button onClick={(e) => {e.stopPropagation(); this.setState({openLogin: true})}}>Log in</Button>
                 <Login open={this.state.openLogin} handleOpen={this.handleOpenClose.bind(this, "openLogin")} login={this.props.login}/>
-                <Button onClick={() => this.setState({openSignUp: true})}>Sign up</Button>
+                <Button onClick={(e) => {e.stopPropagation(); this.setState({openSignUp: true})}}>Sign up</Button>
                 <SignUp open={this.state.openSignUp} handleOpen={this.handleOpenClose.bind(this, "openSignUp")} login={this.props.login}/>
             </div>
         );

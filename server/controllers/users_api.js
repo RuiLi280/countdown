@@ -53,7 +53,7 @@ module.exports.getData = async function(req, res) {
             username: doc.username,
             email: doc.email,
             defaultCd: doc.defaultCd,
-            cdList: doc.cdList,
+            cdList: doc.cdList ? doc.cdList : [],
         });
     } catch (e) {
         console.error(e);

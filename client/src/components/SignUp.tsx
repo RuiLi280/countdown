@@ -36,7 +36,6 @@ class SignUp extends Component<PropsType, StateType> {
                 this.setState({checkEmail: emailError.ok});
             }
         }
-
         this.setState((ps) => ({...ps, [id]: val,}));
     }
 
@@ -54,16 +53,10 @@ class SignUp extends Component<PropsType, StateType> {
             password: data.password,
             username: data.username
         }).then((res) => {
-            if (res.status === 409) {
-                this.setState({checkEmail: emailError.format});
-            } else if (res.status === 201) {
-                this.props.login(true);
-                this.handleClose();
-            } else {
-                console.error("error");
-            }
+            this.props.login(true);
+            this.handleClose();
         }).catch(err => {
-            console.log(err);
+            this.setState({checkEmail: emailError.format});
         });
     }
 
