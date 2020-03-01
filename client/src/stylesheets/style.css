@@ -21,10 +21,8 @@ ul {
 }
 
 .main-countdown {
-    /*font-family: 'Black Ops One', cursive;*/
     font-family: 'Roboto Mono', monospace;
     font-weight: bold;
-    /*font-family: 'Black Ops One', monospace;*/
     font-size: 15vw;
     position: absolute;
     top: 50%;
@@ -122,11 +120,20 @@ ul {
     z-index: 1;
     user-select: none;
 
-    -webkit-transition-property: right;
-    -webkit-transition-duration: 2s;
-    -webkit-transition-timing-function: ease;
-    transition-property: right;
+    -webkit-transition-duration: 0.5s;
+    -moz-transition-duration: 0.5s;
+    -ms-transition-duration: 0.5s;
+    -o-transition-duration: 0.5s;
     transition-duration: 0.5s;
+    -webkit-transition-property: right;
+    -moz-transition-property: right;
+    -ms-transition-property: right;
+    -o-transition-property: right;
+    transition-property: right;
+    -webkit-transition-timing-function: ease;
+    -moz-transition-timing-function: ease;
+    -ms-transition-timing-function: ease;
+    -o-transition-timing-function: ease;
     transition-timing-function: ease;
 }
 
@@ -135,14 +142,22 @@ ul {
     width: 231px;
     position: absolute;
     right: -201px;
-    /*background-attachment: fixed;*/
     z-index: 1;
 
-    -webkit-transition-property: right;
-    -webkit-transition-duration: 2s;
-    -webkit-transition-timing-function: ease;
-    transition-property: right;
+    -webkit-transition-duration: 0.5s;
+    -moz-transition-duration: 0.5s;
+    -ms-transition-duration: 0.5s;
+    -o-transition-duration: 0.5s;
     transition-duration: 0.5s;
+    -webkit-transition-property: right;
+    -moz-transition-property: right;
+    -ms-transition-property: right;
+    -o-transition-property: right;
+    transition-property: right;
+    -webkit-transition-timing-function: ease;
+    -moz-transition-timing-function: ease;
+    -ms-transition-timing-function: ease;
+    -o-transition-timing-function: ease;
     transition-timing-function: ease;
 }
 
@@ -152,13 +167,13 @@ ul {
     position: absolute;
     font-family: 'Fredoka One', cursive;
     cursor: pointer;
-    fill: rgba(134, 134, 134, 0.2);
+    fill: rgba(86, 86, 86, 0.2);
     z-index: 1;
 }
 
 .cd-list-expand:hover {
-    fill: rgba(181,181,181,0.6);
-    background-color: rgba(132, 132, 132, 0.41)
+    fill: rgba(195, 195, 195, 0.71);
+    background: linear-gradient(to right, rgba(155, 155, 155, 0.11), rgba(95, 95, 95, 0.11), rgba(125, 125, 125, 0.11));
 }
 
 .cd-list-expand svg {
@@ -180,7 +195,6 @@ ul {
 .add {
     width: 100%;
     height: 60px;
-    /*border-bottom: black solid 1px;*/
     text-align: center;
     line-height: 60px;
     cursor: pointer;
@@ -201,7 +215,6 @@ ul {
     box-sizing: content-box;
     width: 100%;
     height: 100px;
-    /*border-bottom: black solid 1px;*/
     position: relative;
     cursor: pointer;
     z-index: 1;
@@ -222,13 +235,11 @@ ul {
     bottom: 0;
     box-shadow: inset 0 0 5000px rgba(255, 255, 255, .5);
     filter: blur(100px);
-    /*margin: -20px;*/
 }
 
 .glass {
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, .1);
     border-radius: 3px;
-    /*z-index: 1;*/
 }
 
 .cd-list-item-content {
