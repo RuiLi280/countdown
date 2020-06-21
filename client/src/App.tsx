@@ -46,7 +46,7 @@ class App extends Component<{}, StateType> {
                         username: d.username,
                         email: d.email,
                         defaultCd: defaultCd,
-                        list: d.cdList.map((item: CDObj) => ({...item, target: new Date(item.target)})),
+                        list: d.cdList.map((item: CDObj) => ({...item, target: item.target})),
                     },
                     login: d.isLogin
                 });
@@ -117,11 +117,18 @@ class App extends Component<{}, StateType> {
         this.setState({login: login});
     }
 
+    background = {
+        backgroundImage: 'url(./bg.JPG)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+    };
+
     render() {
         const newCD = this.state.newCD;
         const user = this.state.user;
         return (
-            <div className={"app-container"}>
+            <div className={"app-container"} style={this.background}>
                 <UserIcon hasLogin={this.state.login} login={this.handleLogin} username={user.username} email={user.email}/>
                 <MainDisplay targetDate={user.defaultCd}/>
                 <CountDownList

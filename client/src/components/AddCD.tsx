@@ -5,9 +5,15 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 type PropsType = {title: string, setTitle: (title:string)=>void,
-    date: Date | null, setDate: (date: Date) => void,
+    date: Date | null, setDate: (date: Date | null, value?: string | null | undefined) => void,
     dest: string, setDest: (dest: string) => void,
     open: boolean, handleOpenClose: (open: boolean) => void,
     add: () => void
@@ -81,21 +87,33 @@ class AddCD extends Component<PropsType, StateType> {
                                 value={title}
                                 onChange={(e) => this.props.setTitle(e.target.value)}
                             />
-                            <TextField
-                                margin={"dense"}
-                                id={"date"}
-                                type={"date"}
-                                value={AddCD.formatDate(date)}
-                                onChange={(e) => this.setDateTime(e.target.value, AddCD.formatTime(date))}
-                                required
-                            />
-                            <TextField
-                                margin={"dense"}
-                                id={"time"}
-                                type={"time"}
-                                value={AddCD.formatTime(date)}
-                                onChange={(e) => this.setDateTime(AddCD.formatDate(date), e.target.value)}
-                            />
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardDatePicker
+                                    disableToolbar
+                                    variant="inline"
+                                    format="MM/dd/yyyy"
+                                    margin="normal"
+                                    id="date-picker-inline"
+                                    label="Date picker inline"
+                                    minDate={new Date()}
+                                    value={this.props.date}
+                                    onChange={this.props.setDate}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                                <KeyboardTimePicker
+                                    margin="normal"
+                                    variant="inline"
+                                    id="time-picker"
+                                    label="Time picker"
+                                    value={this.props.date}
+                                    onChange={this.props.setDate}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change time',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
                             <TextField
                                 margin={"dense"}
                                 id={"dest"}
